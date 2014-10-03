@@ -5,8 +5,8 @@ Maintainer: Kill Your TV <killyourtv@i2pmail.org>
 Build-Depends: debhelper (>= 9), cmake, weechat-dev (>= 1.0-1~bpo70+1), libtoxcore-dev
 Standards-Version: 3.9.5
 Homepage: https://github.com/haavardp/tox-weechat
-#Vcs-Git: git://anonscm.debian.org/collab-maint/tox-weechat.git
-#Vcs-Browser: http://anonscm.debian.org/?p=collab-maint/tox-weechat.git;a=summary
+Vcs-Git: git://killyourtv.i2p/git/tox-weechat.git
+Vcs-Browser: http://killyourtv.i2p/gitweb/?p=tox-weechat.git
 
 Package: tox-weechat
 Architecture: any
