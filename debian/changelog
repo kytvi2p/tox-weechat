@@ -1,15 +1,15 @@
+tox-weechat (0.1+20140928.1-2~deb7u+1) stable; urgency=medium
+
+  * Backport to Wheezy
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Fri, 03 Oct 2014 20:59:48 +0000
+
 tox-weechat (0.1+20140928.1-2) unstable; urgency=medium
 
   * Add VCS info to debian/control
   * Ensure weechat 1.0.1 or newer is installed
 
  -- Kill Your TV <killyourtv@i2pmail.org>  Fri, 03 Oct 2014 18:28:57 +0000
-
-tox-weechat (0.1+20140928.1-1~deb7u+1) stable; urgency=medium
-
-  * Backport to Wheezy
-
- -- Kill Your TV <killyourtv@i2pmail.org>  Fri, 03 Oct 2014 01:12:09 +0000
 
 tox-weechat (0.1+20140928.1-1) unstable; urgency=low
 
