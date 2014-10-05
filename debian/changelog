@@ -19,9 +19,12 @@ tox-weechat (0.1+20141005.1-1) unstable; urgency=medium
   * Formatting.
   * Added profile to buffer names to avoid conflicts.
   * Fixed group chat joining.
+  * Updated README.md.
+  * Removed -Werror.
 
   [ Kill Your TV ]
   * New upstream git snapshot
+  * New build-dep on libsqlite3-dev
 
  -- Kill Your TV <killyourtv@i2pmail.org>  Sun, 05 Oct 2014 01:47:42 +0000
 
