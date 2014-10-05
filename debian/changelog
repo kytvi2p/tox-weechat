@@ -1,3 +1,30 @@
+tox-weechat (0.1+20141005.1-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Added /upgrade to TODO.
+  * Tweaked README, fixed links.
+  * Use -Werror when compiling.
+  * Removed twc-data.{h,c}.
+  * Fixed typo.
+  * Added SQLite persistent storage for friend requests.
+  * Added group chat code.
+  * Wrote group chat invite code.
+  * More group chats.
+  * Added twc_uint32_reverse_bytes function.
+  * Added /nospam command.
+  * Prevented crash when typing into group chats.
+  * Added name and Tox ID completion.
+  * sd.
+  * Fixed bugs with names containing spaces.
+  * Formatting.
+  * Added profile to buffer names to avoid conflicts.
+  * Fixed group chat joining.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Sun, 05 Oct 2014 01:47:42 +0000
+
 tox-weechat (0.1+20140928.1-2) unstable; urgency=medium
 
   * Add VCS info to debian/control
