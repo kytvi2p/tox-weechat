@@ -30,9 +30,11 @@
 #include "twc-bootstrap.h"
 #include "twc-config.h"
 #include "twc-friend-request.h"
+#include "twc-group-invite.h"
 #include "twc-message-queue.h"
 #include "twc-chat.h"
 #include "twc-tox-callbacks.h"
+#include "twc-sqlite.h"
 #include "twc-utils.h"
 
 #include "twc-profile.h"
@@ -176,7 +178,7 @@ twc_profile_new(const char *name)
     profile->tox_online = false;
 
     profile->chats = twc_list_new();
-    profile->friend_requests = twc_list_new();
+    profile->group_chat_invites = twc_list_new();
     profile->message_queues = weechat_hashtable_new(32,
                                                     WEECHAT_HASHTABLE_INTEGER,
                                                     WEECHAT_HASHTABLE_POINTER,
@@ -213,15 +215,6 @@ twc_profile_load(struct t_twc_profile *profile)
                    weechat_prefix("network"), weechat_plugin->name,
                    profile->name);
 
-    // TODO: this does nothing
-    if (profile->friend_requests->count > 0)
-    {
-        weechat_printf(profile->buffer,
-                       "%sYou have %d pending friend requests.",
-                       weechat_prefix("network"),
-                       profile->friend_requests->count);
-    }
-
     // create Tox
     profile->tox = tox_new(NULL);
     if (!(profile->tox))
@@ -233,6 +226,7 @@ twc_profile_load(struct t_twc_profile *profile)
     }
 
     // try loading Tox saved data
+    // TODO: this can return -1 even if it does not fail
     if (twc_profile_load_data(profile) == -1)
     {
         // we failed to load - set some defaults
@@ -245,6 +239,18 @@ twc_profile_load(struct t_twc_profile *profile)
 
         tox_set_name(profile->tox,
                      (uint8_t *)name, strlen(name));
+    }
+
+    // register with sqlite
+    twc_sqlite_add_profile(profile);
+
+    int friend_request_count = twc_sqlite_friend_request_count(profile);
+    if (friend_request_count > 0)
+    {
+        weechat_printf(profile->buffer,
+                       "%sYou have %d pending friend requests.",
+                       weechat_prefix("network"),
+                       friend_request_count);
     }
 
     // bootstrap DHT
@@ -264,6 +270,9 @@ twc_profile_load(struct t_twc_profile *profile)
     tox_callback_user_status(profile->tox, twc_user_status_callback, profile);
     tox_callback_status_message(profile->tox, twc_status_message_callback, profile);
     tox_callback_friend_request(profile->tox, twc_friend_request_callback, profile);
+    tox_callback_group_invite(profile->tox, twc_group_invite_callback, profile);
+    tox_callback_group_message(profile->tox, twc_group_message_callback, profile);
+    tox_callback_group_action(profile->tox, twc_group_action_callback, profile);
 }
 
 /**
@@ -404,6 +413,7 @@ twc_profile_delete(struct t_twc_profile *profile,
 {
     char *data_path = twc_profile_expanded_data_path(profile);
 
+    twc_sqlite_delete_profile(profile);
     twc_profile_free(profile);
 
     if (delete_data)
@@ -427,8 +437,8 @@ twc_profile_free(struct t_twc_profile *profile)
     }
 
     // free things
-    twc_friend_request_free_profile(profile);
-    twc_chat_free_profile(profile);
+    twc_chat_free_list(profile->chats);
+    twc_group_chat_invite_free_list(profile->group_chat_invites);
     twc_message_queue_free_profile(profile);
     free(profile->name);
     free(profile);

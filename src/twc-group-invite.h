@@ -17,45 +17,48 @@
  * along with Tox-WeeChat.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TOX_WEECHAT_FRIEND_REQUEST_H
-#define TOX_WEECHAT_FRIEND_REQUEST_H
+#ifndef TOX_WEECHAT_GROUP_INVITE_H
+#define TOX_WEECHAT_GROUP_INVITE_H
+
+#include <stdlib.h>
 
 #include <tox/tox.h>
 
 struct t_twc_list;
 
 /**
- * Represents a friend request with a Tox ID and a message.
+ * Represents a group chat invite.
  */
-struct t_twc_friend_request
+struct t_twc_group_chat_invite
 {
     struct t_twc_profile *profile;
 
-    int request_id;
-    uint8_t tox_id[TOX_CLIENT_ID_SIZE];
-    char *message;
+    int32_t friend_number;
+    uint8_t *data;
+    size_t data_size;
 };
 
 int
-twc_friend_request_add(struct t_twc_profile *profile,
-                       const uint8_t *client_id,
-                       const char *message);
+twc_group_chat_invite_add(struct t_twc_profile *profile,
+                          int32_t friend_number,
+                          uint8_t *data,
+                          size_t size);
+
+int
+twc_group_chat_invite_join(struct t_twc_group_chat_invite *invite);
 
 void
-twc_friend_request_accept(struct t_twc_friend_request *request);
+twc_group_chat_invite_remove(struct t_twc_group_chat_invite *invite);
+
+struct t_twc_group_chat_invite *
+twc_group_chat_invite_with_index(struct t_twc_profile *profile,
+                                 int64_t index);
 
 void
-twc_friend_request_remove(struct t_twc_friend_request *request);
-
-struct t_twc_friend_request *
-twc_friend_request_with_index(struct t_twc_profile *profile,
-                              int64_t index);
+twc_group_chat_invite_free(struct t_twc_group_chat_invite *invite);
 
 void
-twc_friend_request_free(struct t_twc_friend_request *request);
+twc_group_chat_invite_free_list(struct t_twc_list *list);
 
-void
-twc_friend_request_free_list(struct t_twc_list *list);
-
-#endif // TOX_WEECHAT_FRIEND_REQUEST_H
+#endif // TOX_WEECHAT_GROUP_INVITE_H
 
