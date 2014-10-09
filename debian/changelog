@@ -1,3 +1,17 @@
+tox-weechat (0.1+20141007.r173-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Added int twc_save_profile_data_file to header.
+  * Renamed method twc_save_profile_data_file.
+  * Save Tox profile data on /save.
+  * Added "Common issues" section to README.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+  * Bump standards version, no source changes needed
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Thu, 09 Oct 2014 21:55:58 +0000
+
 tox-weechat (0.1+20141006.1-1~deb7u+1) stable; urgency=medium
 
   * Backport to Wheezy
