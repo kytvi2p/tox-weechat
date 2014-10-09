@@ -1,3 +1,9 @@
+tox-weechat (0.1+20141007.r173-1~deb7u+1) stable; urgency=medium
+
+  * Backport to Wheezy
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Thu, 09 Oct 2014 21:57:57 +0000
+
 tox-weechat (0.1+20141007.r173-1) unstable; urgency=medium
 
   [ Håvard Pettersson ]
@@ -11,12 +17,6 @@ tox-weechat (0.1+20141007.r173-1) unstable; urgency=medium
   * Bump standards version, no source changes needed
 
  -- Kill Your TV <killyourtv@i2pmail.org>  Thu, 09 Oct 2014 21:55:58 +0000
-
-tox-weechat (0.1+20141006.1-1~deb7u+1) stable; urgency=medium
-
-  * Backport to Wheezy
-
- -- Kill Your TV <killyourtv@i2pmail.org>  Mon, 06 Oct 2014 14:58:00 +0000
 
 tox-weechat (0.1+20141006.1-1) unstable; urgency=medium
 
