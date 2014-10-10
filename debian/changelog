@@ -1,3 +1,14 @@
+tox-weechat (0.1+20141010.r175-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Tweaked README.
+  * Fixed crash with invalid group invite numbers.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Fri, 10 Oct 2014 09:41:50 +0000
+
 tox-weechat (0.1+20141007.r173-1) unstable; urgency=medium
 
   [ Håvard Pettersson ]
