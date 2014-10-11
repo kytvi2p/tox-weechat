@@ -151,7 +151,7 @@ twc_match_friend(struct t_twc_profile *profile, const char *search_string)
             twc_bin2hex(tox_id, TOX_CLIENT_ID_SIZE, hex_id);
 
             if (weechat_strcasecmp(hex_id, search_string) == 0)
-                return friend_number;
+                return friend_numbers[i];
         }
 
         char *name = twc_get_name_nt(profile->tox, friend_numbers[i]);
@@ -247,10 +247,30 @@ twc_cmd_friend(void *data, struct t_gui_buffer *buffer,
         return WEECHAT_RC_OK;
     }
 
-    // /friend add <Tox ID> [<message>]
+    // /friend add [-force] <Tox ID> [<message>]
     else if (argc >= 3 && weechat_strcasecmp(argv[1], "add") == 0)
     {
-        if (strlen(argv[2]) != TOX_FRIEND_ADDRESS_SIZE * 2)
+        bool force;
+        const char *hex_id;
+        const char *message;
+
+        force = weechat_strcasecmp(argv[2], "-force") == 0;
+        if (force)
+        {
+            hex_id = argv[3];
+            message = argc >= 5 ? argv_eol[4] : NULL;
+        }
+        else
+        {
+            hex_id = argv[2];
+            message = argc >= 4 ? argv_eol[3] : NULL;
+        }
+
+        if (!message)
+            // TODO: default message as option
+            message = "Hi! Please add me on Tox!";
+
+        if (strlen(hex_id) != TOX_FRIEND_ADDRESS_SIZE * 2)
         {
             weechat_printf(profile->buffer,
                            "%sTox ID length invalid. Please try again.",
@@ -260,14 +280,29 @@ twc_cmd_friend(void *data, struct t_gui_buffer *buffer,
         }
 
         char address[TOX_FRIEND_ADDRESS_SIZE];
-        twc_hex2bin(argv[2], TOX_FRIEND_ADDRESS_SIZE, address);
+        twc_hex2bin(hex_id, TOX_FRIEND_ADDRESS_SIZE, address);
 
-        char *message;
-        if (argc == 3 || strlen(argv_eol[3]) == 0)
-            // TODO: default message as option
-            message = "Hi! Please add me on Tox!";
-        else
-            message = argv_eol[3];
+        if (force)
+        {
+            bool fail = false;
+            char *hex_key = strndup(hex_id, TOX_CLIENT_ID_SIZE * 2);
+            int32_t friend_number = twc_match_friend(profile, hex_key);
+            free(hex_key);
+
+            if (friend_number == TWC_FRIEND_MATCH_AMBIGUOUS)
+                fail = true;
+            else if (friend_number != TWC_FRIEND_MATCH_NOMATCH)
+                fail = tox_del_friend(profile->tox, friend_number) != 0;
+
+            if (fail)
+            {
+                weechat_printf(profile->buffer,
+                               "%scould not remove friend; please remove "
+                               "manually before resending friend request",
+                               weechat_prefix("error"));
+                return WEECHAT_RC_OK;
+            }
+        }
 
         int32_t result = tox_add_friend(profile->tox,
                                         (uint8_t *)address,
@@ -283,7 +318,8 @@ twc_cmd_friend(void *data, struct t_gui_buffer *buffer,
                 break;
             case TOX_FAERR_ALREADYSENT:
                 weechat_printf(profile->buffer,
-                               "%sYou have already sent a friend request to that address.",
+                               "%sYou have already sent a friend request to "
+                               "that address (use -force to circumvent)",
                                weechat_prefix("error"));
                 break;
             case TOX_FAERR_OWNKEY:
@@ -875,52 +911,38 @@ twc_cmd_tox(void *data, struct t_gui_buffer *buffer,
         return WEECHAT_RC_OK;
     }
 
-    // /tox load <profile>
-    else if (argc >= 2 && (weechat_strcasecmp(argv[1], "load") == 0))
+    // /tox load|unload|reload [<profile>...]
+    else if (argc >= 2 && (weechat_strcasecmp(argv[1], "load") == 0
+                           || weechat_strcasecmp(argv[1], "unload") == 0
+                           || weechat_strcasecmp(argv[1], "reload") == 0))
     {
+        bool load = weechat_strcasecmp(argv[1], "load") == 0;
+        bool unload = weechat_strcasecmp(argv[1], "unload") == 0;
+        bool reload = weechat_strcasecmp(argv[1], "reload") == 0;
+
         if (argc == 2)
         {
             struct t_twc_profile *profile = twc_profile_search_buffer(buffer);
             if (!profile)
                 return WEECHAT_RC_ERROR;
 
-            twc_profile_load(profile);
-        }
-        else
-        {
-            for (int i = 2; i < argc; ++i)
-            {
-                char *name = argv[i];
-                struct t_twc_profile *profile = twc_profile_search_name(name);
-                TWC_CHECK_PROFILE_EXISTS(profile);
-
-                twc_profile_load(profile);
-            }
-        }
-
-        return WEECHAT_RC_OK;
-    }
-
-    // /tox unload <profile>
-    else if (argc >= 2 && (weechat_strcasecmp(argv[1], "unload") == 0))
-    {
-        if (argc == 2)
-        {
-            struct t_twc_profile *profile = twc_profile_search_buffer(buffer);
-            if (!profile)
-                return WEECHAT_RC_ERROR;
-
-            twc_profile_unload(profile);
-        }
-        else
-        {
-            for (int i = 2; i < argc; ++i)
-            {
-                char *name = argv[i];
-                struct t_twc_profile *profile = twc_profile_search_name(name);
-                TWC_CHECK_PROFILE_EXISTS(profile);
-
+            if (unload || reload)
                 twc_profile_unload(profile);
+            if (load || reload)
+                twc_profile_load(profile);
+        }
+        else
+        {
+            for (int i = 2; i < argc; ++i)
+            {
+                char *name = argv[i];
+                struct t_twc_profile *profile = twc_profile_search_name(name);
+                TWC_CHECK_PROFILE_EXISTS(profile);
+
+                if (unload || reload)
+                    twc_profile_unload(profile);
+                if (load || reload)
+                    twc_profile_load(profile);
             }
         }
 
@@ -947,11 +969,11 @@ twc_commands_init()
     weechat_hook_command("friend",
                          "manage friends",
                          "list"
-                         " || add <address> [<message>]"
+                         " || add [-force] <address> [<message>]"
                          " || remove <number>|<name>|<Tox ID>"
                          " || requests"
-                         " || accept <number>|<name>|<Tox ID>|all"
-                         " || decline <number>|<name>|<Tox ID>|all",
+                         " || accept <number>|<Tox ID>|all"
+                         " || decline <number>|<Tox ID>|all",
                          "    list: list all friends\n"
                          "     add: add a friend by their public Tox address\n"
                          "requests: list friend requests\n"
@@ -1034,19 +1056,22 @@ twc_commands_init()
                          " || create <name>"
                          " || delete <name> -yes|-keepdata"
                          " || load [<name>...]"
-                         " || unload [<name>...]",
+                         " || unload [<name>...]"
+                         " || reload [<name>...]",
                          "  list: list all Tox profile\n"
                          "create: create a new Tox profile\n"
                          "delete: delete a Tox profile; requires either -yes "
                          "to confirm deletion or -keepdata to delete the "
                          "profile but keep the Tox data file\n"
-                         "  load: load a Tox profile and connect to the network\n"
-                         "unload: unload a Tox profile\n",
+                         "  load: load one or more Tox profiles and connect to the network\n"
+                         "unload: unload one or more Tox profiles\n"
+                         "reload: reload one or more Tox profiles\n",
                          "list"
                          " || create"
                          " || delete %(tox_profiles) -yes|-keepdata"
                          " || load %(tox_unloaded_profiles)|%*"
-                         " || unload %(tox_loaded_profiles)|%*",
+                         " || unload %(tox_loaded_profiles)|%*"
+                         " || reload %(tox_loaded_profiles)|%*",
                          twc_cmd_tox, NULL);
 }
 
