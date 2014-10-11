@@ -1,3 +1,43 @@
+tox-weechat (0.1+20141011.r195-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Added proxy options.
+  * Added validation of proxy_address option.
+  * Pass proxy options when creating Tox object.
+  * Implemented proxy capabilities.
+  * Renamed some options.
+  * README update; we now support proxies.
+  * Tweaked config code.
+  * Added /tox reload command.
+  * Updated /tox documentation.
+  * Moved profile_default option array to profile.{h,c}.
+  * Actually care about max_friend_requests.
+  * Fixed bug in twc_match_friend.
+  * Added -force flag to /friend add.
+  * Fixed /friend accept|decline documentation.
+  * Added option for enabling/disabling IPv6.
+  * Formatting.
+  * Fixed twc_friend_request_add return value.
+  * Simplified CMake flags.
+  * Updated README.
+  * Allocate Tox_Options statically.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Sat, 11 Oct 2014 13:27:35 +0000
+
+tox-weechat (0.1+20141010.r175-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Tweaked README.
+  * Fixed crash with invalid group invite numbers.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Fri, 10 Oct 2014 09:41:50 +0000
+
 tox-weechat (0.1+20141007.r173-1~deb7u+1) stable; urgency=medium
 
   * Backport to Wheezy

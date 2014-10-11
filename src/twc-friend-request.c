@@ -40,6 +40,12 @@ twc_friend_request_add(struct t_twc_profile *profile,
                        const uint8_t *client_id,
                        const char *message)
 {
+    int max_request_count =
+        TWC_PROFILE_OPTION_INTEGER(profile, TWC_PROFILE_OPTION_MAX_FRIEND_REQUESTS);
+    int current_request_count = twc_sqlite_friend_request_count(profile);
+    if (current_request_count >= max_request_count)
+        return -1;
+
     // create a new request
     struct t_twc_friend_request *request
         = malloc(sizeof(struct t_twc_friend_request));
@@ -50,9 +56,8 @@ twc_friend_request_add(struct t_twc_profile *profile,
     request->message = strdup(message);
     memcpy(request->tox_id, client_id, TOX_CLIENT_ID_SIZE);
 
-    int rc = twc_sqlite_add_friend_request(profile, request) == -1;
+    int rc = twc_sqlite_add_friend_request(profile, request);
 
-    // add to list
     if (rc == -1)
         return -2;
 
@@ -83,8 +88,7 @@ twc_friend_request_remove(struct t_twc_friend_request *request)
  * Get friend request with a given index.
  */
 struct t_twc_friend_request *
-twc_friend_request_with_index(struct t_twc_profile *profile,
-                              int64_t index)
+twc_friend_request_with_index(struct t_twc_profile *profile, int64_t index)
 {
     return twc_sqlite_friend_request_with_id(profile, index);
 }

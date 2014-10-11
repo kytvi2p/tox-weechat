@@ -32,12 +32,18 @@
 
 struct t_config_file *twc_config_file = NULL;
 struct t_config_section *twc_config_section_profile = NULL;
+struct t_config_section *twc_config_section_profile_default = NULL;
 
 char *twc_profile_option_names[TWC_PROFILE_NUM_OPTIONS] =
 {
     "save_file",
     "autoload",
     "max_friend_requests",
+    "proxy_address",
+    "proxy_port",
+    "proxy",
+    "udp",
+    "ipv6",
 };
 
 char *twc_profile_option_defaults[TWC_PROFILE_NUM_OPTIONS] =
@@ -45,6 +51,23 @@ char *twc_profile_option_defaults[TWC_PROFILE_NUM_OPTIONS] =
     "%h/tox/%p",
     "off",
     "100",
+    NULL,
+    NULL,
+    "off",
+    "on",
+    "on",
+};
+
+bool twc_profile_option_null_allowed[TWC_PROFILE_NUM_OPTIONS] =
+{
+    false,
+    false,
+    false,
+    true, // we allow proxy information to be null
+    true, // -------------------------------------
+    false,
+    false,
+    false,
 };
 
 /**
@@ -160,7 +183,15 @@ twc_config_profile_check_value_callback(void *data,
                                         struct t_config_option *option,
                                         const char *value)
 {
-    return 1; // 1=ok, 0=not ok
+    enum t_twc_profile_option option_index = (intptr_t)data;
+
+    switch (option_index)
+    {
+        case TWC_PROFILE_OPTION_PROXY_ADDRESS:
+            return !value || strlen(value) < 256;
+        default:
+            return 1;
+    }
 }
 
 /**
@@ -170,6 +201,78 @@ void
 twc_config_profile_change_callback(void *data,
                                    struct t_config_option *option)
 {
+}
+
+/**
+ * Create a new option for a profile.
+ */
+struct t_config_option *
+twc_config_init_option(struct t_config_section *section,
+                       int option_index, const char *option_name,
+                       bool is_default_profile)
+{
+    char *type;
+    char *description;
+    char *string_values = NULL;
+    int min = 0, max = 0;
+
+    switch (option_index)
+    {
+        case TWC_PROFILE_OPTION_AUTOLOAD:
+            type = "boolean";
+            description = "automatically load profile and connect to the Tox "
+                          "network when WeeChat starts";
+            break;
+        case TWC_PROFILE_OPTION_IPV6:
+            type = "boolean";
+            description = "use IPv6 as well as IPv4 to connect to the Tox "
+                          "network";
+            break;
+        case TWC_PROFILE_OPTION_MAX_FRIEND_REQUESTS:
+            type = "integer";
+            description = "maximum amount of friend requests to retain before "
+                          "ignoring new ones";
+            min = 0; max = INT_MAX;
+            break;
+        case TWC_PROFILE_OPTION_PROXY_ADDRESS:
+            type = "string";
+            description = "proxy address";
+            break;
+        case TWC_PROFILE_OPTION_PROXY_ENABLED:
+            type = "boolean";
+            description = "use a proxy for communicating with the Tox "
+                          "network; requries profile reload to take effect";
+            break;
+        case TWC_PROFILE_OPTION_PROXY_PORT:
+            type = "integer";
+            description = "proxy port";
+            min = 0; max = UINT16_MAX;
+            break;
+        case TWC_PROFILE_OPTION_SAVEFILE:
+            type = "string";
+            description = "path to Tox data file (\"%h\" will be replaced by "
+                          "WeeChat home folder and \"%p\" by profile name";
+            break;
+        case TWC_PROFILE_OPTION_UDP:
+            type = "boolean";
+            description = "use UDP when communicating with the Tox network";
+            break;
+        default:
+            return NULL;
+    }
+
+    char *default_value = twc_profile_option_defaults[option_index];
+    char *value = is_default_profile ? default_value : NULL;
+    bool null_allowed = !is_default_profile
+                        || twc_profile_option_null_allowed[option_index];
+
+    return weechat_config_new_option(
+        twc_config_file, section,
+        option_name, type, description, string_values, min, max,
+        default_value, value, null_allowed,
+        twc_config_profile_check_value_callback, (void *)(intptr_t)option_index,
+        twc_config_profile_change_callback, (void *)(intptr_t)option_index,
+        NULL, NULL);
 }
 
 /**
@@ -188,58 +291,21 @@ twc_config_init()
                                    NULL, NULL,
                                    NULL, NULL,
                                    NULL, NULL);
-}
 
-/**
- * Create a new option for a profile.
- */
-struct t_config_option *
-twc_config_init_option(int option_index, const char *option_name)
-{
-    switch (option_index)
+    twc_config_section_profile_default =
+        weechat_config_new_section(twc_config_file, "profile_default",
+                                   0, 0,
+                                   NULL, NULL,
+                                   NULL, NULL,
+                                   NULL, NULL,
+                                   NULL, NULL,
+                                   NULL, NULL);
+
+    for (int i = 0; i < TWC_PROFILE_NUM_OPTIONS; ++i)
     {
-        case TWC_PROFILE_OPTION_AUTOLOAD:
-            return weechat_config_new_option(
-                twc_config_file, twc_config_section_profile,
-                option_name, "boolean",
-                "automatically load a profile and connect to the Tox network "
-                "when WeeChat starts",
-                NULL, 0, 0,
-                twc_profile_option_defaults[option_index],
-                NULL,
-                0,
-                twc_config_profile_check_value_callback, NULL,
-                twc_config_profile_change_callback, NULL,
-                NULL, NULL);
-        case TWC_PROFILE_OPTION_MAX_FRIEND_REQUESTS:
-            return weechat_config_new_option(
-                twc_config_file, twc_config_section_profile,
-                option_name, "integer",
-                "maximum amount of friend requests to retain before dropping "
-                "new ones",
-                NULL, 0, INT_MAX,
-                twc_profile_option_defaults[option_index],
-                NULL,
-                0,
-                twc_config_profile_check_value_callback, NULL,
-                twc_config_profile_change_callback, NULL,
-                NULL, NULL);
-        case TWC_PROFILE_OPTION_SAVEFILE:
-            return weechat_config_new_option(
-                twc_config_file, twc_config_section_profile,
-                option_name, "string",
-                "path to Tox data file (\"%h\" will be replaced by WeeChat "
-                "home, \"%p\" by the profile name); will be created if it does "
-                "not exist.",
-                NULL, 0, 0,
-                twc_profile_option_defaults[option_index],
-                NULL,
-                0,
-                twc_config_profile_check_value_callback, NULL,
-                twc_config_profile_change_callback, NULL,
-                NULL, NULL);
-        default:
-            return NULL;
+        twc_config_profile_default[i] =
+            twc_config_init_option(twc_config_section_profile_default,
+                                   i, twc_profile_option_names[i], true);
     }
 }
 
@@ -262,8 +328,9 @@ twc_config_init_profile(struct t_twc_profile *profile)
                      profile->name,
                      twc_profile_option_names[i]);
 
-            profile->options[i] = twc_config_init_option(i, option_name);
-            free (option_name);
+            profile->options[i] = twc_config_init_option(twc_config_section_profile,
+                                                         i, option_name, false);
+            free(option_name);
         }
     }
 }

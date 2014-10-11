@@ -40,6 +40,7 @@
 #include "twc-profile.h"
 
 struct t_twc_list *twc_profiles = NULL;
+struct t_config_option *twc_config_profile_default[TWC_PROFILE_NUM_OPTIONS];
 
 /**
  * Get a profile's expanded data path, replacing:
@@ -52,7 +53,7 @@ char *
 twc_profile_expanded_data_path(struct t_twc_profile *profile)
 {
     const char *weechat_dir = weechat_info_get ("weechat_dir", NULL);
-    const char *base_path = weechat_config_string(profile->options[TWC_PROFILE_OPTION_SAVEFILE]);
+    const char *base_path = TWC_PROFILE_OPTION_STRING(profile, TWC_PROFILE_OPTION_SAVEFILE);
     char *home_expanded = weechat_string_replace(base_path, "%h", weechat_dir);
     char *full_path = weechat_string_replace(home_expanded, "%p", profile->name);
     free(home_expanded);
@@ -215,13 +216,49 @@ twc_profile_load(struct t_twc_profile *profile)
                    weechat_prefix("network"), weechat_plugin->name,
                    profile->name);
 
+    // create Tox options object
+    Tox_Options options;
+    options.proxy_enabled =
+        TWC_PROFILE_OPTION_BOOLEAN(profile, TWC_PROFILE_OPTION_PROXY_ENABLED);
+
+    const char *proxy_address =
+        TWC_PROFILE_OPTION_STRING(profile, TWC_PROFILE_OPTION_PROXY_ADDRESS);
+    if (proxy_address)
+        memcpy(options.proxy_address, proxy_address, strlen(proxy_address) + 1);
+
+    options.proxy_port =
+        TWC_PROFILE_OPTION_INTEGER(profile, TWC_PROFILE_OPTION_PROXY_PORT);
+    options.udp_disabled =
+        !TWC_PROFILE_OPTION_BOOLEAN(profile, TWC_PROFILE_OPTION_UDP);
+    options.ipv6enabled =
+        TWC_PROFILE_OPTION_BOOLEAN(profile, TWC_PROFILE_OPTION_IPV6);
+
+    if (options.proxy_enabled)
+    {
+        if (!options.proxy_address || !options.proxy_port)
+        {
+            weechat_printf(profile->buffer,
+                           "%sproxy is enabled, proxy information is "
+                           "incomplete; aborting",
+                           weechat_prefix("error"));
+            return;
+        }
+        else
+        {
+            weechat_printf(profile->buffer,
+                           "%susing proxy %s:%d",
+                           weechat_prefix("network"),
+                           options.proxy_address, options.proxy_port);
+        }
+    }
+
     // create Tox
-    profile->tox = tox_new(NULL);
+    profile->tox = tox_new(&options);
     if (!(profile->tox))
     {
         weechat_printf(profile->buffer,
-                       "Could not create Tox instance!",
-                       weechat_prefix("error"), weechat_plugin->name);
+                       "%sCould not create Tox instance!",
+                       weechat_prefix("error"));
         return;
     }
 
@@ -321,7 +358,7 @@ twc_profile_autoload()
     struct t_twc_list_item *item;
     twc_list_foreach(twc_profiles, index, item)
     {
-        if (weechat_config_boolean(item->profile->options[TWC_PROFILE_OPTION_AUTOLOAD]))
+        if (TWC_PROFILE_OPTION_BOOLEAN(item->profile, TWC_PROFILE_OPTION_AUTOLOAD))
             twc_profile_load(item->profile);
     }
 }

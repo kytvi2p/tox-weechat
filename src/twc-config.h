@@ -20,8 +20,6 @@
 #ifndef TOX_WEECHAT_CONFIG_H
 #define TOX_WEECHAT_CONFIG_H
 
-#include "twc-profile.h"
-
 void
 twc_config_init();
 
