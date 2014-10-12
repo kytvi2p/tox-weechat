@@ -1,3 +1,16 @@
+tox-weechat (0.1+20141012.r199-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Added some config options.
+  * Removed twc_config_profile_write_callback.
+  * Added twc_list_foreach_reverse.
+  * Improved performance of twc_list_get.
+
+  [ Kill Your TV ]
+  * New git upstream package
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Sun, 12 Oct 2014 18:40:26 +0000
+
 tox-weechat (0.1+20141011.r195-1ubuntu1) trusty; urgency=medium
 
   * Upload to PPA
