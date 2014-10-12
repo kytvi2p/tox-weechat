@@ -1,3 +1,9 @@
+tox-weechat (0.1+20141012.r199-1ubuntu1) trusty; urgency=medium
+
+  * Build for Trusty
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Sun, 12 Oct 2014 19:07:16 +0000
+
 tox-weechat (0.1+20141012.r199-1) unstable; urgency=medium
 
   [ Håvard Pettersson ]
@@ -10,12 +16,6 @@ tox-weechat (0.1+20141012.r199-1) unstable; urgency=medium
   * New git upstream package
 
  -- Kill Your TV <killyourtv@i2pmail.org>  Sun, 12 Oct 2014 18:40:26 +0000
-
-tox-weechat (0.1+20141011.r195-1ubuntu1) trusty; urgency=medium
-
-  * Upload to PPA
-
- -- Kill Your TV <killyourtv@i2pmail.org>  Sat, 11 Oct 2014 18:45:49 +0000
 
 tox-weechat (0.1+20141011.r195-1) unstable; urgency=medium
 
