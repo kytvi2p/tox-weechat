@@ -1,3 +1,30 @@
+tox-weechat (0.1+20141018.r204-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Removed build-scripts.
+  * Added link to [haavard] repository.
+  * Added group chat join/part/name change messages.
+  * Fixed name of peer leaving group chat.
+  * Fixed link in readme.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Sat, 18 Oct 2014 11:28:07 +0000
+
+tox-weechat (0.1+20141012.r199-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Added some config options.
+  * Removed twc_config_profile_write_callback.
+  * Added twc_list_foreach_reverse.
+  * Improved performance of twc_list_get.
+
+  [ Kill Your TV ]
+  * New git upstream package
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Sun, 12 Oct 2014 18:40:26 +0000
+
 tox-weechat (0.1+20141011.r195-1~deb7u+1) stable; urgency=medium
 
   * Backport to Wheezy
