@@ -1,3 +1,23 @@
+tox-weechat (0.1+20141118.r215-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Added some safeguards against crashes.
+  * Updated group invite callback function signature.
+  * Added error messages  when group chat invites fail.
+  * Prevent crash when twc_chat_new returns NULL.
+  * Implemented /group create.
+  * Create group chat buffer if it's missing in namelist callback.
+  * Use group chat title instead of "Group Chat #" if possible.
+  * Prevent crashes in twc_chat_refresh.
+  * Implemented /topic.
+  * Added group chat title callback.
+  * Formatting.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Tue, 18 Nov 2014 23:26:27 +0000
+
 tox-weechat (0.1+20141018.r204-1) unstable; urgency=medium
 
   [ Håvard Pettersson ]
