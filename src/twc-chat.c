@@ -110,16 +110,18 @@ twc_chat_new_group(struct t_twc_profile *profile,
 
     struct t_twc_chat *chat = twc_chat_new(profile, buffer_name);
     if (chat)
+    {
         chat->group_number = group_number;
 
-    chat->nicklist_group = weechat_nicklist_add_group(chat->buffer, NULL,
-                                                      NULL, NULL, true);
-    chat->nicks = weechat_hashtable_new(256,
-                                        WEECHAT_HASHTABLE_INTEGER,
-                                        WEECHAT_HASHTABLE_POINTER,
-                                        NULL, NULL);
+        chat->nicklist_group = weechat_nicklist_add_group(chat->buffer, NULL,
+                                                          NULL, NULL, true);
+        chat->nicks = weechat_hashtable_new(256,
+                                            WEECHAT_HASHTABLE_INTEGER,
+                                            WEECHAT_HASHTABLE_POINTER,
+                                            NULL, NULL);
 
-    weechat_buffer_set(chat->buffer, "nicklist", "1");
+        weechat_buffer_set(chat->buffer, "nicklist", "1");
+    }
 
     return chat;
 }
@@ -141,16 +143,23 @@ twc_chat_refresh(struct t_twc_chat *chat)
     }
     else if (chat->group_number >= 0)
     {
-        name = malloc(sizeof(char) * 32);
-        sprintf(name, "Group Chat %d", chat->group_number);
-        title = strdup(name);
+        char group_name[TOX_MAX_NAME_LENGTH + 1] = {0};
+        int len = tox_group_get_title(chat->profile->tox, chat->group_number,
+                                      (uint8_t *)group_name,
+                                      TOX_MAX_NAME_LENGTH);
+        if (len <= 0)
+            sprintf(group_name, "Group Chat %d", chat->group_number);
+
+        name = title = strdup((char *)group_name);
     }
 
     weechat_buffer_set(chat->buffer, "short_name", name);
     weechat_buffer_set(chat->buffer, "title", title);
 
-    free(name);
-    free(title);
+    if (name)
+        free(name);
+    if (title && title != name)
+        free(title);
 }
 
 /**
