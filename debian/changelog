@@ -1,3 +1,28 @@
+tox-weechat (0.1+20141119.r231-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Comment typo fix.
+  * Link to libtoxav.
+  * Added support for joining A/V group chats.
+  * Fixed libtoxav build on Travis.
+  * Fixed uninitialized variable.
+  * Fixed group chats not being deleted on close.
+  * Added TWC_CHECK_GROUP_CHAT macro.
+  * Implemented /invite.
+  * Fixed typo in comment.
+  * Added profile parameter to TWC_CHECK_FRIEND_NUMBER macro.
+  * Formatting.
+  * Added an API for Tox DNS lookup.
+  * Changed output type of twc_hex2bin to (uint8_t *).
+  * DNS query callback should provide Tox ID in binary form.
+  * Fixed syntax error in CMake < 3.0.
+
+  [ Kill Your TV ]
+  * Add build-dep on libtoxav-dev
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Wed, 19 Nov 2014 13:48:54 +0000
+
 tox-weechat (0.1+20141118.r215-1) unstable; urgency=medium
 
   [ Håvard Pettersson ]
