@@ -77,12 +77,9 @@ twc_friend_message_callback(Tox *tox, int32_t friend_number,
                             const uint8_t *message, uint16_t length,
                             void *data)
 {
-    twc_handle_friend_message(tox,
-                              friend_number,
-                              message,
-                              length,
-                              data,
-                              TWC_MESSAGE_TYPE_MESSAGE);
+    twc_handle_friend_message(tox, friend_number,
+                              message, length,
+                              data, TWC_MESSAGE_TYPE_MESSAGE);
 }
 
 void
@@ -90,12 +87,9 @@ twc_friend_action_callback(Tox *tox, int32_t friend_number,
                            const uint8_t *message, uint16_t length,
                            void *data)
 {
-    twc_handle_friend_message(tox,
-                              friend_number,
-                              message,
-                              length,
-                              data,
-                              TWC_MESSAGE_TYPE_ACTION);
+    twc_handle_friend_message(tox, friend_number,
+                              message, length,
+                              data, TWC_MESSAGE_TYPE_ACTION);
 }
 
 void
@@ -234,22 +228,33 @@ twc_group_invite_callback(Tox *tox,
     struct t_twc_profile *profile = data;
     char *friend_name = twc_get_name_nt(profile->tox, friend_number);
 
-    if (type == TOX_GROUPCHAT_TYPE_TEXT)
-    {
-        int64_t rc = twc_group_chat_invite_add(profile, friend_number,
-                                               (uint8_t *)invite_data, length);
+    int64_t rc = twc_group_chat_invite_add(profile, friend_number, type,
+                                           (uint8_t *)invite_data, length);
 
-        weechat_printf(profile->buffer,
-                       "%sReceived a group chat invite from %s; "
-                       "join with \"/group join %d\"",
-                       weechat_prefix("network"), friend_name, rc);
+    char *type_str;
+    switch (type)
+    {
+        case TOX_GROUPCHAT_TYPE_TEXT:
+            type_str = "a text-only group chat"; break;
+        case TOX_GROUPCHAT_TYPE_AV:
+            type_str = "an audio/video group chat"; break;
+        default:
+            type_str = "a group chat of unknown type"; break;
     }
-    else if (type == TOX_GROUPCHAT_TYPE_AV)
+
+    if (rc >= 0)
     {
         weechat_printf(profile->buffer,
-                       "%sReceived an audio group chat invite from %s; "
-                       "these are currently unsupported and can not be joined",
-                       weechat_prefix("network"), friend_name);
+                       "%sReceived %s invite from %s; "
+                       "join with \"/group join %d\"",
+                       weechat_prefix("network"), type_str, friend_name, rc);
+    }
+    else
+    {
+        weechat_printf(profile->buffer,
+                       "%sReceived a group chat invite from %s, but failed to "
+                       "process it; try again",
+                       weechat_prefix("error"), friend_name, rc);
     }
 
     free(friend_name);
@@ -334,6 +339,14 @@ twc_group_namelist_change_callback(Tox *tox,
             weechat_nicklist_remove_nick(chat->buffer, nick);
             weechat_hashtable_remove(chat->nicks, &peer_number);
         }
+        else
+        {
+#ifdef TWC_DEBUG
+            weechat_printf(chat->buffer, "warning: could not find nick %s (%d) for %s",
+                           name, peer_number,
+                           change_type == TOX_CHAT_CHANGE_PEER_DEL ? "deleting" : "updating");
+#endif // TWC_DEBUG
+        }
     }
 
     if (change_type == TOX_CHAT_CHANGE_PEER_ADD
@@ -349,20 +362,38 @@ twc_group_namelist_change_callback(Tox *tox,
     {
         case TOX_CHAT_CHANGE_PEER_NAME:
             if (prev_name && name)
+#ifdef TWC_DEBUG
+                weechat_printf(chat->buffer, "%s%s [%d] is now known as %s",
+                               weechat_prefix("network"), prev_name, peer_number, name);
+#else
                 weechat_printf(chat->buffer, "%s%s is now known as %s",
                                weechat_prefix("network"), prev_name, name);
+#endif // TWC_DEBUG
             break;
         case TOX_CHAT_CHANGE_PEER_ADD:
             if (name)
+#ifdef TWC_DEBUG
+                weechat_printf(chat->buffer, "%s%s [%d] just joined the group chat",
+                               weechat_prefix("join"), name, peer_number);
+#else
                 weechat_printf(chat->buffer, "%s%s just joined the group chat",
                                weechat_prefix("join"), name);
+#endif // TWC_DEBUG
             break;
         case TOX_CHAT_CHANGE_PEER_DEL:
             if (prev_name)
+#ifdef TWC_DEBUG
+                weechat_printf(chat->buffer, "%s%s [%d] just left the group chat",
+                               weechat_prefix("quit"), prev_name, peer_number);
+#else
                 weechat_printf(chat->buffer, "%s%s just left the group chat",
                                weechat_prefix("quit"), prev_name);
+#endif // TWC_DEBUG
             break;
     }
+
+    if (prev_name)
+        free(prev_name);
 }
 
 void

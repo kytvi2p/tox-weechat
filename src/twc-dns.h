@@ -17,39 +17,23 @@
  * along with Tox-WeeChat.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TOX_WEECHAT_UTILS_H
-#define TOX_WEECHAT_UTILS_H
+#ifndef TOX_WEECHAT_DNS_H
+#define TOX_WEECHAT_DNS_H
 
-#include <stdlib.h>
+#include <stdint.h>
 
-#include <tox/tox.h>
+enum t_twc_dns_rc
+{
+    TWC_DNS_RC_OK = 0,
+    TWC_DNS_RC_ERROR = -1,
+};
 
-void
-twc_hex2bin(const char *hex, size_t size, uint8_t *out);
+enum t_twc_dns_rc
+twc_dns_query(const char *dns_id,
+              void (*callback)(void *data,
+                               enum t_twc_dns_rc rc,
+                               const uint8_t *tox_id),
+              void *callback_data);
 
-void
-twc_bin2hex(const uint8_t *bin, size_t size, char *out);
-
-char *
-twc_null_terminate(const uint8_t *str, size_t length);
-
-char *
-twc_get_name_nt(Tox *tox, int32_t friend_number);
-
-char *
-twc_get_status_message_nt(Tox *tox, int32_t friend_number);
-
-char *
-twc_get_peer_name_nt(Tox *tox, int32_t group_number, int32_t peer_number);
-
-char *
-twc_get_self_name_nt(Tox *tox);
-
-char *
-twc_get_friend_id_short(Tox *tox, int32_t friend_number);
-
-uint32_t
-twc_uint32_reverse_bytes(uint32_t num);
-
-#endif // TOX_WEECHAT_UTILS_H
+#endif // TOX_WEECHAT_DNS_H
 
