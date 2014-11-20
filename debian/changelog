@@ -1,3 +1,18 @@
+tox-weechat (0.1+20141120.r237-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Updated README.
+  * Fixed some type warnings.
+  * Remember to free prev_name if it is allocated.
+  * Added some debug messages.
+  * Formatting.
+  * Only print SQLite debug messages when compiled for it.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Thu, 20 Nov 2014 13:06:42 +0000
+
 tox-weechat (0.1+20141119.r231-1) unstable; urgency=medium
 
   [ Håvard Pettersson ]
