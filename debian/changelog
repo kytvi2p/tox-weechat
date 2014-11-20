@@ -1,3 +1,77 @@
+tox-weechat (0.1+20141120.r237-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Updated README.
+  * Fixed some type warnings.
+  * Remember to free prev_name if it is allocated.
+  * Added some debug messages.
+  * Formatting.
+  * Only print SQLite debug messages when compiled for it.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Thu, 20 Nov 2014 13:06:42 +0000
+
+tox-weechat (0.1+20141119.r231-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Comment typo fix.
+  * Link to libtoxav.
+  * Added support for joining A/V group chats.
+  * Fixed libtoxav build on Travis.
+  * Fixed uninitialized variable.
+  * Fixed group chats not being deleted on close.
+  * Added TWC_CHECK_GROUP_CHAT macro.
+  * Implemented /invite.
+  * Fixed typo in comment.
+  * Added profile parameter to TWC_CHECK_FRIEND_NUMBER macro.
+  * Formatting.
+  * Added an API for Tox DNS lookup.
+  * Changed output type of twc_hex2bin to (uint8_t *).
+  * DNS query callback should provide Tox ID in binary form.
+  * Fixed syntax error in CMake < 3.0.
+
+  [ Kill Your TV ]
+  * Add build-dep on libtoxav-dev
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Wed, 19 Nov 2014 13:48:54 +0000
+
+tox-weechat (0.1+20141118.r215-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Added some safeguards against crashes.
+  * Updated group invite callback function signature.
+  * Added error messages  when group chat invites fail.
+  * Prevent crash when twc_chat_new returns NULL.
+  * Implemented /group create.
+  * Create group chat buffer if it's missing in namelist callback.
+  * Use group chat title instead of "Group Chat #" if possible.
+  * Prevent crashes in twc_chat_refresh.
+  * Implemented /topic.
+  * Added group chat title callback.
+  * Formatting.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Tue, 18 Nov 2014 23:26:27 +0000
+
+tox-weechat (0.1+20141018.r204-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Removed build-scripts.
+  * Added link to [haavard] repository.
+  * Added group chat join/part/name change messages.
+  * Fixed name of peer leaving group chat.
+  * Fixed link in readme.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Sat, 18 Oct 2014 11:28:07 +0000
+
 tox-weechat (0.1+20141012.r199-1ubuntu1) trusty; urgency=medium
 
   * Build for Trusty
