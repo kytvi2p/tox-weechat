@@ -1,3 +1,9 @@
+tox-weechat (0.1+20141122.r243-1~precise+1) precise; urgency=medium
+
+  * Backport to Precise
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Fri, 28 Nov 2014 15:19:17 +0000
+
 tox-weechat (0.1+20141122.r243-1) unstable; urgency=medium
 
   [ Håvard Pettersson ]
@@ -12,12 +18,6 @@ tox-weechat (0.1+20141122.r243-1) unstable; urgency=medium
   * New upstream git snapshot
 
  -- Kill Your TV <killyourtv@i2pmail.org>  Sun, 23 Nov 2014 00:14:14 +0000
-
-tox-weechat (0.1+20141120.r237-1~precise+1) precise; urgency=medium
-
-  * Backport to Precise
-
- -- Kill Your TV <killyourtv@i2pmail.org>  Thu, 20 Nov 2014 13:57:55 +0000
 
 tox-weechat (0.1+20141120.r237-1) unstable; urgency=medium
 
