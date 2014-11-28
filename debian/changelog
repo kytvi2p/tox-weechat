@@ -1,3 +1,9 @@
+tox-weechat (0.1+20141122.r243-1ubuntu1) trusty; urgency=medium
+
+  * Building for Trusty/Utopic
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Fri, 28 Nov 2014 15:18:31 +0000
+
 tox-weechat (0.1+20141122.r243-1) unstable; urgency=medium
 
   [ Håvard Pettersson ]
