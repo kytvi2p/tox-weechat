@@ -1,3 +1,18 @@
+tox-weechat (0.1+20141122.r243-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Removed debug messages.
+  * Formatting.
+  * Removed redundant error message.
+  * Added twc_hash_tox_id.
+  * Use Tox ID instead of peer number to index nicks in group chats.
+  * Implemented /part.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Sun, 23 Nov 2014 00:14:14 +0000
+
 tox-weechat (0.1+20141120.r237-1ubuntu1) trusty; urgency=medium
 
   * Building for Trusty
