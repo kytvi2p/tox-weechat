@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Håvard Pettersson <haavard.pettersson@gmail.com>
+ * Copyright (c) 2015 Håvard Pettersson <mail@haavard.me>
  *
  * This file is part of Tox-WeeChat.
  *
@@ -33,7 +33,7 @@ enum t_twc_profile_option
     TWC_PROFILE_OPTION_MAX_FRIEND_REQUESTS,
     TWC_PROFILE_OPTION_PROXY_ADDRESS,
     TWC_PROFILE_OPTION_PROXY_PORT,
-    TWC_PROFILE_OPTION_PROXY_ENABLED,
+    TWC_PROFILE_OPTION_PROXY_TYPE,
     TWC_PROFILE_OPTION_UDP,
     TWC_PROFILE_OPTION_IPV6,
 

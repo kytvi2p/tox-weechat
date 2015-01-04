@@ -1,3 +1,16 @@
+tox-weechat (0.1+20150104.r247-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Updated copyright line for 2015.
+  * Removed proxy_enabled option in favor of proxy_type.
+  * Minor updates to user-facing strings.
+  * Minor config code refactor.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Sun, 04 Jan 2015 15:04:47 +0000
+
 tox-weechat (0.1+20141122.r243-1~deb7u+1) stable; urgency=medium
 
   * Backport to Wheezy
