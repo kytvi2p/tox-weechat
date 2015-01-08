@@ -1,3 +1,14 @@
+tox-weechat (0.1+20150106.r249-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Reflowed README.
+  * Got rid of SQLite.
+
+  [ Kill Your TV ]
+  * New upsream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Thu, 08 Jan 2015 10:14:11 +0000
+
 tox-weechat (0.1+20150104.r247-1~deb7u+1) stable; urgency=medium
 
   * Backport to Wheezy
