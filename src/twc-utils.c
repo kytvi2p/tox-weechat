@@ -140,7 +140,7 @@ twc_get_self_name_nt(Tox *tox)
 char *
 twc_get_friend_id_short(Tox *tox, int32_t friend_number)
 {
-    uint8_t client_id[TOX_CLIENT_ID_SIZE];
+    uint8_t client_id[TOX_PUBLIC_KEY_SIZE];
     tox_get_client_id(tox, friend_number, client_id);
 
     size_t short_id_length = weechat_config_integer(twc_config_short_id_size);
@@ -170,16 +170,49 @@ twc_uint32_reverse_bytes(uint32_t num)
 }
 
 /**
- * Hash a Tox ID of size TOX_CLIENT_ID_SIZE bytes using a modified djb2 hash.
+ * Hash a Tox ID of size TOX_PUBLIC_KEY_SIZE bytes using a modified djb2 hash.
  */
 unsigned long long
 twc_hash_tox_id(const uint8_t *tox_id)
 {
     unsigned long long hash = 5381;
 
-    for (size_t i = 0; i < TOX_CLIENT_ID_SIZE; ++i)
+    for (size_t i = 0; i < TOX_PUBLIC_KEY_SIZE; ++i)
         hash ^= (hash << 5) + (hash >> 2) + tox_id[i];
 
     return hash;
+}
+
+/**
+ * Read an entire file into memory.
+ *
+ * @return TWC_RC_OK on success, TWC_RC_ERROR if file can not be opened, and
+ *         TWC_RC_ERROR_MALLOC if an appropriate buffer can not be allocated.
+ */
+enum t_twc_rc
+twc_read_file(const char *path, uint8_t **data, size_t *size)
+{
+    FILE *file;
+    if (file = fopen(path, "r"))
+    {
+        // get file size
+        fseek(file, 0, SEEK_END);
+        *size = ftell(file);
+        rewind(file);
+
+        if (data = malloc(sizeof(*data) * *size))
+        {
+            fread(data, sizeof(uint8_t), *size, file);
+            fclose(file);
+            return TWC_RC_OK;
+        }
+        else
+        {
+            fclose(file);
+            return TWC_RC_ERROR_MALLOC;
+        }
+    }
+
+    return TWC_RC_ERROR;
 }
 
