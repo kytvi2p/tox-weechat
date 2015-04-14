@@ -52,6 +52,7 @@ struct t_twc_profile
     struct t_hook *tox_do_timer;
 
     struct t_twc_list *chats;
+    struct t_twc_list *friend_requests;
     struct t_twc_list *group_chat_invites;
     struct t_hashtable *message_queues;
 };
@@ -92,7 +93,7 @@ twc_profile_init();
 struct t_twc_profile *
 twc_profile_new(const char *name);
 
-void
+enum t_twc_rc
 twc_profile_load(struct t_twc_profile *profile);
 
 void

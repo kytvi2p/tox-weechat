@@ -1,3 +1,29 @@
+tox-weechat (0.1+20150410.r255-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Added CMake find modules, fixing build on FreeBSD.
+  * Rename macros per the new core API.
+  * Update Tox_Options use to match new API.
+  * asd
+  * Define function return codes.
+  * New API cleanup.
+
+  [ Kill Your TV ]
+  * New upstream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Tue, 14 Apr 2015 09:41:56 +0000
+
+tox-weechat (0.1+20150106.r249-1) unstable; urgency=medium
+
+  [ Håvard Pettersson ]
+  * Reflowed README.
+  * Got rid of SQLite.
+
+  [ Kill Your TV ]
+  * New upsream git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Thu, 08 Jan 2015 10:14:11 +0000
+
 tox-weechat (0.1+20150104.r247-1~precise+1) precise; urgency=medium
 
   * Backport to Precise
