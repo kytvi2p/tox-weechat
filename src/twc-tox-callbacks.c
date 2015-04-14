@@ -38,24 +38,25 @@ twc_do_timer_cb(void *data,
 {
     struct t_twc_profile *profile = data;
 
-    tox_do(profile->tox);
-    struct t_hook *hook = weechat_hook_timer(tox_do_interval(profile->tox), 0, 1,
-                                             twc_do_timer_cb, profile);
+    tox_iterate(profile->tox);
+    struct t_hook *hook = weechat_hook_timer(tox_iteration_interval(profile->tox),
+                                             0, 1, twc_do_timer_cb, profile);
     profile->tox_do_timer = hook;
 
     // check connection status
-    int connected = tox_isconnected(profile->tox);
-    twc_profile_set_online_status(profile, connected);
+    TOX_CONNECTION connection = tox_self_get_connection_status(profile->tox);
+    bool is_connected = connection == TOX_CONNECTION_TCP
+                        || connection == TOX_CONNECTION_UDP;
+    twc_profile_set_online_status(profile, is_connected);
 
     return WEECHAT_RC_OK;
 }
 
 void
-twc_handle_friend_message(Tox *tox, int32_t friend_number,
-                          const uint8_t *message, uint16_t length,
-                          void *data,
-                          enum TWC_MESSAGE_TYPE message_type)
-
+twc_friend_message_callback(Tox *tox, uint32_t friend_number,
+                            TOX_MESSAGE_TYPE type,
+                            const uint8_t *message, size_t length,
+                            void *data)
 {
     struct t_twc_profile *profile = data;
     struct t_twc_chat *chat = twc_chat_search_friend(profile,
@@ -66,36 +67,15 @@ twc_handle_friend_message(Tox *tox, int32_t friend_number,
     char *message_nt = twc_null_terminate(message, length);
 
     twc_chat_print_message(chat, "", name,
-                           message_nt, message_type);
+                           message_nt, type);
 
     free(name);
     free(message_nt);
 }
 
 void
-twc_friend_message_callback(Tox *tox, int32_t friend_number,
-                            const uint8_t *message, uint16_t length,
-                            void *data)
-{
-    twc_handle_friend_message(tox, friend_number,
-                              message, length,
-                              data, TWC_MESSAGE_TYPE_MESSAGE);
-}
-
-void
-twc_friend_action_callback(Tox *tox, int32_t friend_number,
-                           const uint8_t *message, uint16_t length,
-                           void *data)
-{
-    twc_handle_friend_message(tox, friend_number,
-                              message, length,
-                              data, TWC_MESSAGE_TYPE_ACTION);
-}
-
-void
-twc_connection_status_callback(Tox *tox,
-                               int32_t friend_number, uint8_t status,
-                               void *data)
+twc_connection_status_callback(Tox *tox, uint32_t friend_number,
+                               TOX_CONNECTION status, void *data)
 {
     struct t_twc_profile *profile = data;
     char *name = twc_get_name_nt(profile->tox, friend_number);
@@ -120,8 +100,8 @@ twc_connection_status_callback(Tox *tox,
 }
 
 void
-twc_name_change_callback(Tox *tox, int32_t friend_number,
-                         const uint8_t *name, uint16_t length,
+twc_name_change_callback(Tox *tox, uint32_t friend_number,
+                         const uint8_t *name, size_t length,
                          void *data)
 {
     struct t_twc_profile *profile = data;
@@ -155,9 +135,8 @@ twc_name_change_callback(Tox *tox, int32_t friend_number,
 }
 
 void
-twc_user_status_callback(Tox *tox,
-                         int32_t friend_number, uint8_t status,
-                         void *data)
+twc_user_status_callback(Tox *tox, uint32_t friend_number,
+                         TOX_USER_STATUS status, void *data)
 {
     struct t_twc_profile *profile = data;
     struct t_twc_chat *chat = twc_chat_search_friend(profile,
@@ -168,8 +147,8 @@ twc_user_status_callback(Tox *tox,
 }
 
 void
-twc_status_message_callback(Tox *tox, int32_t friend_number,
-                            const uint8_t *message, uint16_t length,
+twc_status_message_callback(Tox *tox, uint32_t friend_number,
+                            const uint8_t *message, size_t length,
                             void *data)
 {
     struct t_twc_profile *profile = data;
@@ -182,7 +161,7 @@ twc_status_message_callback(Tox *tox, int32_t friend_number,
 
 void
 twc_friend_request_callback(Tox *tox, const uint8_t *public_key,
-                            const uint8_t *message, uint16_t length,
+                            const uint8_t *message, size_t length,
                             void *data)
 {
     struct t_twc_profile *profile = data;
@@ -198,8 +177,8 @@ twc_friend_request_callback(Tox *tox, const uint8_t *public_key,
     }
     else
     {
-        char hex_address[TOX_CLIENT_ID_SIZE * 2 + 1];
-        twc_bin2hex(public_key, TOX_CLIENT_ID_SIZE, hex_address);
+        char hex_address[TOX_PUBLIC_KEY_SIZE * 2 + 1];
+        twc_bin2hex(public_key, TOX_PUBLIC_KEY_SIZE, hex_address);
 
         weechat_printf(profile->buffer,
                        "%sReceived a friend request from %s with message \"%s\"; "
@@ -328,7 +307,7 @@ twc_group_namelist_change_callback(Tox *tox,
     char *name = twc_get_peer_name_nt(profile->tox, group_number, peer_number);
     char *prev_name = NULL;
 
-    uint8_t pubkey[TOX_CLIENT_ID_SIZE];
+    uint8_t pubkey[TOX_PUBLIC_KEY_SIZE];
     int pkrc = tox_group_peer_pubkey(profile->tox, group_number,
                                      peer_number, pubkey);
     if (pkrc == 0)
@@ -353,7 +332,7 @@ twc_group_namelist_change_callback(Tox *tox,
                                              name, NULL, NULL, NULL, 1);
             if (nick)
                 weechat_hashtable_set_with_size(chat->nicks,
-                                                pubkey, TOX_CLIENT_ID_SIZE,
+                                                pubkey, TOX_PUBLIC_KEY_SIZE,
                                                 nick, 0);
         }
     }
