@@ -1,3 +1,9 @@
+tox-weechat (0.1+20150410.r255-1~utopic+1) utopic; urgency=medium
+
+  * Building for Utopic
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Tue, 14 Apr 2015 19:12:23 +0000
+
 tox-weechat (0.1+20150410.r255-1) unstable; urgency=medium
 
   [ Håvard Pettersson ]
@@ -23,12 +29,6 @@ tox-weechat (0.1+20150106.r249-1) unstable; urgency=medium
   * New upsream git snapshot
 
  -- Kill Your TV <killyourtv@i2pmail.org>  Thu, 08 Jan 2015 10:14:11 +0000
-
-tox-weechat (0.1+20150104.r247-1ubuntu1) utopic; urgency=medium
-
-  * Building for Utopic
-
- -- Kill Your TV <killyourtv@i2pmail.org>  Sun, 04 Jan 2015 23:25:19 +0000
 
 tox-weechat (0.1+20150104.r247-1) unstable; urgency=medium
 
