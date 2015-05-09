@@ -1,4 +1,4 @@
-tox-weechat (0.1+20150410.r255-1) unstable; urgency=medium
+tox-weechat (0.1+20150410.r255-1+rpi) unstable; urgency=medium
 
   [ Håvard Pettersson ]
   * Added CMake find modules, fixing build on FreeBSD.
