@@ -1,12 +1,10 @@
-Tox-WeeChat
-===========
+# Tox-WeeChat
 Tox-WeeChat is a [Tox][1] protocol plugin for [WeeChat][2]. It is functional,
-but lacks certain features like Tox DNS.
+but lacks certain features.
 
 Current build status: [![Build Status](https://travis-ci.org/haavardp/tox-weechat.svg?branch=master)][3]
 
-Features
---------
+## Features
 Below is a list of implemented features, as well as a rough roadmap for the
 future.
 
@@ -14,19 +12,14 @@ future.
  - [x] Group chats (text only)
  - [x] Proxy support
  - [x] Multiple profiles
+ - [x] Encrypted save files
  - [ ] Tox DNS
- - [ ] Encrypted save files
  - [ ] File transfer
- - [ ] Avatars
  - [ ] WeeChat `/upgrade`
  - [ ] Audio/video
 
-Installation
-------------
-> Tox-WeeChat is available in the [AUR][4] and the [[haavard]][5] pacman
-repository.
-
-Tox-WeeChat requires [WeeChat][2] >= 1.0.1 and the latest-ish [libtoxcore][6].
+## Installation
+Tox-WeeChat requires [WeeChat][2] >= 1.0.1 and the latest-ish [toxcore][4].
 It also requires CMake to be built. Installation is fairly simple; after
 getting the source, compile and install using CMake:
 
@@ -37,8 +30,7 @@ getting the source, compile and install using CMake:
 This installs the plugin binary `tox.so` to the recommended location
 `~/.weechat/plugins`. The default location is `/usr/local/lib/weechat/plugins`.
 
-Usage
------
+## Usage
  - If the plugin does not load automatically, load it with `/plugin load tox`.
    You may have to specify the full path to the plugin binary.
  - Create a new profile with `/tox create <profile name>`. The data file is
@@ -83,7 +75,5 @@ along with Tox-WeeChat.  If not, see <http://www.gnu.org/licenses/>.
 [1]: http://tox.im
 [2]: http://weechat.org
 [3]: https://travis-ci.org/haavardp/tox-weechat
-[4]: https://aur.archlinux.org/packages/tox-weechat-git
-[5]: https://haavard.me/archlinux
-[6]: https://github.com/irungentoo/toxcore
+[4]: https://github.com/irungentoo/toxcore
 
