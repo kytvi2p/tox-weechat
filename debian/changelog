@@ -1,3 +1,9 @@
+tox-weechat (0.1+20150907.r271-1ubuntu1) wily; urgency=medium
+
+  * Upload to PPA
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Sat, 19 Sep 2015 21:18:35 +0000
+
 tox-weechat (0.1+20150907.r271-1) unstable; urgency=medium
 
   [ Michael Raitza ]
