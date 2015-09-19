@@ -2,10 +2,11 @@ language: c
 
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-sdk-team/ppa
+  - sudo add-apt-repository -y ppa:kalakris/cmake
   - sudo apt-get update -q
 
-    # install libtoxav dependencies
-  - sudo apt-get install -y libopus-dev libvpx-dev
+    # install libtoxav dependencies and a newer version of cmake
+  - sudo apt-get install -y libopus-dev libvpx-dev cmake
 
 install:
   - _libsodium_version=1.0.0
@@ -16,7 +17,7 @@ install:
   - pushd libsodium
   - git checkout tags/${_libsodium_version}
   - ./autogen.sh
-  - ./configure --prefix=/usr
+  - ./configure
   - make -j3
   - sudo make install
   - popd
@@ -25,7 +26,7 @@ install:
   - git clone git://github.com/irungentoo/toxcore
   - pushd toxcore
   - autoreconf -i
-  - ./configure --prefix=/usr --disable-testing --disable-ntox
+  - ./configure --disable-testing --disable-ntox
   - make -j3
   - sudo make install
   - popd
@@ -35,7 +36,7 @@ install:
   - pushd weechat
   - git checkout tags/${_weechat_version}
   - mkdir build && cd build
-  - cmake .. -DPREFIX=/usr
+  - cmake ..
   - make -j3
   - sudo make install
   - popd
