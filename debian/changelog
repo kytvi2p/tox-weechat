@@ -1,3 +1,9 @@
+tox-weechat (0.1+20150907.r271-1~vivid+1) vivid; urgency=medium
+
+  * Building for Vivid
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Sun, 20 Sep 2015 00:52:29 +0000
+
 tox-weechat (0.1+20150907.r271-1) unstable; urgency=medium
 
   [ Michael Raitza ]
@@ -27,12 +33,6 @@ tox-weechat (0.1+20150907.r271-1) unstable; urgency=medium
   * New upstream Git snapshot
 
  -- Kill Your TV <killyourtv@i2pmail.org>  Fri, 11 Sep 2015 01:12:14 +0000
-
-tox-weechat (0.1+20150410.r255-1ubuntu1) vivid; urgency=medium
-
-  * Building for Vivid
-
- -- Kill Your TV <killyourtv@i2pmail.org>  Tue, 14 Apr 2015 19:11:13 +0000
 
 tox-weechat (0.1+20150410.r255-1) unstable; urgency=medium
 
