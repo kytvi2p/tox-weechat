@@ -1,3 +1,33 @@
+tox-weechat (0.1+20150907.r271-1) unstable; urgency=medium
+
+  [ Michael Raitza ]
+  * Updated to new tox API. Fixed profile loading.
+
+  [ Håvard Pettersson ]
+  * Additional error handling.
+  * Removed unused function.
+  * Update README.md
+  * Improve CMake find modules.
+  * Make Tox AV features optional.
+  * Add DNS and ENCRYPTSAVE components.
+  * Make CMake find modules backwards-compatible.
+  * Fix invalid preprocessor #ifdef.
+  * Don't install dependencies to /usr.
+  * Require a newer version of CMake.
+
+  [ Michael Raitza ]
+  * Added encrypted profile storage.
+
+  [ Håvard Pettersson ]
+  * Fix comment typo.
+  * Allow build without encryptsave library + formatting cleanup.
+  * Update README.
+
+  [ Kill Your TV ]
+  * New upstream Git snapshot
+
+ -- Kill Your TV <killyourtv@i2pmail.org>  Fri, 11 Sep 2015 01:12:14 +0000
+
 tox-weechat (0.1+20150410.r255-1ubuntu1) vivid; urgency=medium
 
   * Building for Vivid
